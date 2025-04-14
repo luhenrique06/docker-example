@@ -4,7 +4,6 @@ const mariadb = require('mariadb');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Cria pool de conexões MariaDB
 const pool = mariadb.createPool({
   host: 'mariadb-db', 
   user: 'admin',
@@ -13,7 +12,6 @@ const pool = mariadb.createPool({
   connectionLimit: 5
 });
 
-// Rota de teste para verificar conexão com MariaDB
 app.get('/', async (req, res) => {
   let conn;
   try {
@@ -28,7 +26,7 @@ app.get('/', async (req, res) => {
   }
 });
 
-// Inicia o servidor Express
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
