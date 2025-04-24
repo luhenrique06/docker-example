@@ -5,8 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const pool = mariadb.createPool({
-  host: 'localhost', 
-  port:3306,
+  host: 'mariadb-db', 
   user: 'admin',
   password: 'admin',
   database: 'meubanco',
