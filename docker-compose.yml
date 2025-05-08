@@ -27,6 +27,7 @@ services:
       - mariadbdata:/var/lib/mysql
     networks:
       - app-network
+      - app-nerwork2
 
 volumes:
   mariadbdata:
