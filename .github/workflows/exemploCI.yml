@@ -1,1 +1,19 @@
+name: exemploCI
+
+on: ## quando vai rodar o workflow
+  push:
+    branches:
+      -main
+  pull_request:
+    branches:
+      -main
+
+jobs:
+  build:
+    name: 'build'
+    run-on: ubuntu-latest
+
+    steps:
+    - name: 'step checkout'
+    - uses: actions/checkout@v4
 
