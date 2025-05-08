@@ -11,7 +11,7 @@ on: ## quando vai rodar o workflow
 jobs:
   build:
     name: 'build'
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
