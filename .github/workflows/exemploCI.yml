@@ -23,8 +23,14 @@ jobs:
     - run: npm install
     - run: npm test
 
-    - name: Docker build image
-      run: docker build -t exemplo-ci-api:latest .
+    - name: generate tags
+      id: generate_tag
+      run: |
+        SHA=$(echo $GITHUB_SHA | head -c7)
+        echo "sha=$SHA" >> $GITHUB_OUTPUT 
+
+    - name: Docker build image ##depois dos checks de seguranca
+      run: docker build -t exemplo-ci-api:${{steps.generate_tag.output.sha}} .
 
     
 ## CI -> exec todos os testes, cria e publica a imagem (docker)
