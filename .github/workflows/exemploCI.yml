@@ -30,7 +30,7 @@ jobs:
         echo "sha=$SHA" >> $GITHUB_OUTPUT 
 
     - name: Docker build image ##depois dos checks de seguranca
-      run: docker build -t exemplo-ci-api:${{steps.generate_tag.output.sha}} .
+      run: docker build -t exemplo-ci-api:${{steps.generate_tag.outputs.sha}} .
 
     
 ## CI -> exec todos os testes, cria e publica a imagem (docker)
