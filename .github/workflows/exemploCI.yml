@@ -12,18 +12,25 @@ jobs:
   build:
     name: 'build'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [ 14, 16, 18 ]
-    
+
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+
+    - name: "Setup Node"
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node }}
+        node-version: 20
     - run: npm install
     - run: npm test
 
+    - name: Docker build image
+      run: docker build -t exemplo-ci-api:latest .
+
+    
+## CI -> exec todos os testes, cria e publica a imagem (docker)
+  ## github repo de codigo
+  ## versionador de imagens docker (dockerhub, ECR, ACR etc ...)
+## CD -> pega imagem do docker, scan de imagem, subir essa imagem no ambiente
 
 
 
