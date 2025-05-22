@@ -71,4 +71,4 @@ jobs:
         run: |
           export IMAGE_NAME="luherique/exemplo-ci-api"
           export IMAGE_TAG="${{needs.build.outputs.sha}}"
-          conviso container run "$IMAGE_NAME:$IMAGE_TAG"
+          conviso container run "$IMAGE_NAME:$IMAGE_TAG" --company-id 908
