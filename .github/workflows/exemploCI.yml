@@ -12,6 +12,8 @@ jobs:
   build:
     name: 'build'
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{steps.generate_tag.outputs.sha}}
 
     steps:
     - uses: actions/checkout@v4
