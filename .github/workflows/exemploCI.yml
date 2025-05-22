@@ -1,6 +1,7 @@
 name: exemploCI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -12,6 +13,8 @@ jobs:
   build:
     name: 'build'
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.generate_tag.outputs.sha }}
 
     steps:
       - uses: actions/checkout@v4
@@ -36,10 +39,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker build image
-        run: docker build -t luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}} .
+        run: docker build -t luherique/exemplo-ci-api:${{ steps.generate_tag.outputs.sha }} .
 
       - name: Push image
-        run: docker push luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}}
+        run: docker push luherique/exemplo-ci-api:${{ steps.generate_tag.outputs.sha }}
 
   conviso-sast:
     name: "Conviso SAST"
@@ -70,5 +73,5 @@ jobs:
       - name: Container Scan
         run: |
           export IMAGE_NAME="luherique/exemplo-ci-api"
-          export IMAGE_TAG="${{needs.build.outputs.sha}}"
+          export IMAGE_TAG="${{ needs.build.outputs.sha }}"
           conviso container run "$IMAGE_NAME:$IMAGE_TAG" --company-id 908
