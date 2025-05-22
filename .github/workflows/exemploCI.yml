@@ -54,3 +54,21 @@ jobs:
 
       - name: Run AST
         run: conviso ast run --vulnerability-auto-close --company-id 908
+
+  conviso-container-scan:
+    name: "Conviso Container Scan"
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: convisoappsec/convisocli:latest
+      env:
+        CONVISO_API_KEY: ${{ secrets.CONVISO_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Container Scan
+        run: |
+          export IMAGE_NAME="luherique/exemplo-ci-api"
+          export IMAGE_TAG="${{needs.build.outputs.sha}}"
+          conviso container run "$IMAGE_NAME:$IMAGE_TAG"
