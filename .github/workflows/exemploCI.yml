@@ -1,6 +1,6 @@
 name: exemploCI
 
-on: ## quando vai rodar o workflow
+on:
   push:
     branches:
       - main
@@ -14,42 +14,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: "Setup Node"
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-    - run: npm install
-    - run: npm test
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
 
-    - name: generate tags
-      id: generate_tag
-      run: |
-        SHA=$(echo $GITHUB_SHA | head -c7)
-        echo "sha=$SHA" >> $GITHUB_OUTPUT 
+      - name: generate tags
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-    - name: Login container Registry docker :D
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login container Registry Docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Docker build image ##depois dos checks de seguranca
-      run: docker build -t luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}} .
+      - name: Docker build image
+        run: docker build -t luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}} .
 
-    - name: Push image
-      run: docker push luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}}
+      - name: Push image
+        run: docker push luherique/exemplo-ci-api:${{steps.generate_tag.outputs.sha}}
 
-  
+  conviso-sast:
+    name: "Conviso SAST"
+    runs-on: ubuntu-latest
+    container:
+      image: convisoappsec/convisocli
+      env:
+        CONVISO_API_KEY: ${{ secrets.CONVISO_API_KEY }}
 
-    
-## CI -> exec todos os testes, cria e publica a imagem (docker)
-  ## github repo de codigo
-  ## versionador de imagens docker (dockerhub, ECR, ACR etc ...)
-## CD -> pega imagem do docker, scan de imagem, subir essa imagem no ambiente
+    steps:
+      - uses: actions/checkout@v4
 
-
-
-
-
+      - name: Run AST
+        run: conviso ast run --vulnerability-auto-close --company-id 908
