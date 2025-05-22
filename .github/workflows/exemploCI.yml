@@ -73,7 +73,7 @@ jobs:
                 low:
                   maximum: 0
           EOF
-          conviso vulnerability assert-security-rules --rules-file security-rules.yml
+          conviso vulnerability assert-security-rules --rules-file security-rules.yml --company-id 908
 
   conviso-container-scan:
     name: "Conviso Container Scan"
