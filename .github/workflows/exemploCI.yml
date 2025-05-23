@@ -56,6 +56,23 @@ jobs:
      - name: Run AST
        run: conviso ast run --vulnerability-auto-close
 
+     - name: Security Gate Check
+       run: |
+        cat <<EOF > security-rules.yml
+        rules:
+            - from: any
+              severity:
+                critical:
+                  maximum: 1
+                high:
+                  maximum: 1
+                medium:
+                  maximum: 0
+                low:
+                  maximum: 0
+          EOF
+          conviso vulnerability assert-security-rules --rules-file security-rules.yml 
+
   conviso-containers:
    runs-on: ubuntu-latest
    needs: build
