@@ -118,5 +118,8 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         run: |
-          docker build -t exemplo-ci-api:v1
-          docker push exemplo-ci-api:v1
+          docker build -t exemplo-ci-api:${{ needs.build.outputs.sha }} .
+          docker tag exemplo-ci-api:${{ needs.build.outputs.sha }} \
+          ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+
