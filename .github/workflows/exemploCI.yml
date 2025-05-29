@@ -93,37 +93,37 @@ jobs:
   #         export IMAGE_TAG="${{ needs.build.outputs.sha }}"
   #         conviso container run "$IMAGE_NAME:$IMAGE_TAG" --company-id 908
 
-deploy-aws:
-  name: 'Deploy to AWS'
-  runs-on: ubuntu-latest
-  needs: [build, conviso-container-scan, conviso-sast]
+  deploy-aws:
+    name: 'Deploy to AWS'
+    runs-on: ubuntu-latest
+    needs: [build, conviso-sast]
 
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
-    - name: Login to AWS ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Tag and Push Docker image to ECR
-      run: |
-        docker pull luherique/exemplo-ci-api:${{ needs.build.outputs.sha }}
-        docker tag luherique/exemplo-ci-api:${{ needs.build.outputs.sha }} \
-        ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+      - name: Tag and Push Docker image to ECR
+        run: |
+          docker pull luherique/exemplo-ci-api:${{ needs.build.outputs.sha }}
+          docker tag luherique/exemplo-ci-api:${{ needs.build.outputs.sha }} \
+          ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
         
-        docker push ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
 
-    - name: Deploy to AWS App Runner
-      uses: aws-actions/aws-apprunner-deploy@v2
-      with:
-        service: exemplo-ci-api-service
-        source-image: ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
-        region: us-east-2
+      - name: Deploy to AWS App Runner
+        uses: aws-actions/aws-apprunner-deploy@v2
+        with:
+          service: exemplo-ci-api-service
+          source-image: ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+          region: us-east-2
 
