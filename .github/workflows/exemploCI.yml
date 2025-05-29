@@ -62,10 +62,9 @@ jobs:
           ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
 
-      # Se desejar fazer deploy para o App Runner posteriormente, descomente abaixo:
-      # - name: Deploy to AWS App Runner
-      #   uses: aws-actions/aws-apprunner-deploy@v2
-      #   with:
-      #     service: exemplo-ci-api-service
-      #     source-image: ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
-      #     region: us-east-2
+      - name: Deploy to AWS App Runner
+        uses: aws-actions/aws-apprunner-deploy@v2
+        with:
+          service: exemplo-ci-api-service
+          source-image: ${{ steps.login-ecr.outputs.registry }}/exemplo-ci-api:${{ needs.build.outputs.sha }}
+          region: us-west-2
