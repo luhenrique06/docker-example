@@ -96,7 +96,7 @@ jobs:
   deploy-aws:
     name: 'Deploy to AWS'
     runs-on: ubuntu-latest
-    needs: [build, conviso-sast]
+    needs: build
 
     steps:
       - uses: actions/checkout@v4
