@@ -4,14 +4,16 @@ const mariadb = require('mariadb');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const mariadb = require('mariadb');
+require('dotenv').config(); // Load environment variables from .env file
+
 const pool = mariadb.createPool({
-  host: 'mariadb-db', 
-  user: 'admin',
-  password: 'admin',
-  database: 'meubanco',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   connectionLimit: 5
 });
-
 app.get('/', async (req, res) => {
   let conn;
   try {
